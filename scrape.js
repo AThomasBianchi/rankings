@@ -13,21 +13,26 @@ function promiseQBs() {
       .then(function (html) {
         $('#main-container table tbody tr', html).each((i, e) => {
           let player = $('.player-label', e).text();
-          let ptds = parseFloat($('td:nth-of-type(5)', e).text());
-          let rtds = parseFloat($('td:nth-of-type(9)', e).text());
-          qbs.push([player, ptds, rtds]);
+          // let [name, team] = 
+          let passingTds = parseFloat($('td:nth-of-type(5)', e).text());
+          let rushingTds = parseFloat($('td:nth-of-type(9)', e).text());
+          qbs.push({player, passingTds, rushingTds});
         });
+        // console.log(qbs);
+        // return;
         // add total points
-        qbs.forEach(x => x.push(Math.round((x[1] * 3 + x[2] * 6) * 100) / 100));
+        qbs.forEach(x => x.totalPoints = (Math.round((x.passingTds * 3 + x.rushingTds * 6) * 100) / 100));
         // sort by totals
         qbs.sort((a, b) => {
-          if (a[3] > b[3]) return -1;
-          if (b[3] > a[3]) return 1;
+          if (a.totalPoints > b.totalPoints) return -1;
+          if (b.totalPoints > a.totalPoints) return 1;
           return 0;
         });
         // add vorp level
-        let replacementQb = (qbs[replacementLevel['qb'] - 2][3] + qbs[replacementLevel['qb'] - 1][3] + qbs[replacementLevel['qb']][3]) / 3;
-        qbs.forEach(x => x.push(Math.round((x[3] - replacementQb) * 100) / 100));
+        let replacementQb = (qbs[replacementLevel['qb'] - 2].totalPoints + qbs[replacementLevel['qb'] - 1].totalPoints + qbs[replacementLevel['qb']].totalPoints) / 3;
+        qbs.forEach(x => x.vorp = (Math.round((x.totalPoints - replacementQb) * 100) / 100));
+        console.log(qbs);
+        return;
         resolve(qbs);
       })
       .catch(function (err) {
@@ -140,7 +145,10 @@ async function combineAll() {
   }
 }
 
-combineAll();
+// combineAll();
+async function getQbs() {
+  const qbs = await promiseQBs();
+  console.log(qbs);
+}
 
-
-
+promiseQBs();
