@@ -6,17 +6,20 @@ const RB_URL = 'https://www.fantasypros.com/nfl/projections/rb.php';
 const WR_URL = 'https://www.fantasypros.com/nfl/projections/wr.php';
 const TE_URL = 'https://www.fantasypros.com/nfl/projections/te.php';
 
+const regex = /(?<=\s)[A-Z]+$/m
+
 function promiseQBs() {
   return new Promise((resolve, reject) => {
-    let position = 'qb';
+    const position = 'QB';
     let qbs = [];
     rp(QB_URL)
       .then(function (html) {
         $('#main-container table tbody tr', html).each((i, e) => {
-          let player = $('.player-label', e).text();
+          let player_team = $('.player-label', e).text().trim();
+          let { player, team } = returnPlayerTeam(player_team, regex);
           let passTds = parseFloat($('td:nth-of-type(5)', e).text());
           let rushTds = parseFloat($('td:nth-of-type(9)', e).text());
-          qbs.push({ player, position, passTds, rushTds });
+          qbs.push({ player, team, position, passTds, rushTds });
         });
         // add total points
         qbs.forEach(x => x.totalPoints = (Math.round((x.passTds * 3 + x.rushTds * 6) * 100) / 100));
@@ -40,15 +43,16 @@ function promiseQBs() {
 
 function promiseRBs() {
   return new Promise((resolve, reject) => {
-    let position = 'rb';
+    const position = 'RB';
     let rbs = [];
     rp(RB_URL)
       .then((html) => {
         $('#main-container table tbody tr', html).each((i, e) => {
-          let player = $('.player-label', e).text();
+          let player_team = $('.player-label', e).text().trim();
+          let { player, team } = returnPlayerTeam(player_team, regex);
           let rushTds = parseFloat($('td:nth-of-type(4)', e).text());
           let recTds = parseFloat($('td:nth-of-type(7)', e).text());
-          rbs.push({ player, position, rushTds, recTds });
+          rbs.push({ player, team, position, rushTds, recTds });
         });
         rbs.forEach(x => x.totalPoints = (Math.round((x.rushTds * 6 + x.recTds * 6) * 100) / 100));
         rbs.sort((a, b) => {
@@ -74,15 +78,16 @@ function promiseRBs() {
 
 function promiseWRs() {
   return new Promise((resolve, reject) => {
-    let position = 'wr';
+    const position = 'WR';
     let wrs = [];
     rp(WR_URL)
       .then((html) => {
         $('#main-container table tbody tr', html).each((i, e) => {
-          let player = $('.player-label', e).text();
+          let player_team = $('.player-label', e).text().trim();
+          let { player, team } = returnPlayerTeam(player_team, regex);
           let rushTds = parseFloat($('td:nth-of-type(4)', e).text());
           let recTds = parseFloat($('td:nth-of-type(7)', e).text());
-          wrs.push({ player, position, rushTds, recTds });
+          wrs.push({ player, team, position, rushTds, recTds });
         });
         wrs.forEach(x => x.totalPoints = (Math.round((x.rushTds * 6 + x.recTds * 6) * 100) / 100));
         wrs.sort((a, b) => {
@@ -108,14 +113,15 @@ function promiseWRs() {
 
 function promiseTEs() {
   return new Promise((resolve, reject) => {
-    let position = 'te';
+    const position = 'TE';
     let tes = [];
     rp(TE_URL)
       .then(function (html) {
         $('#main-container table tbody tr', html).each((i, e) => {
-          let player = $('.player-label', e).text();
+          let player_team = $('.player-label', e).text().trim();
+          let { player, team } = returnPlayerTeam(player_team, regex);
           let recTds = parseFloat($('td:nth-of-type(4)', e).text());
-          tes.push({ player, position, recTds });
+          tes.push({ player, team, position, recTds });
         });
         // total points
         tes.forEach(x => x.totalPoints = (Math.round((x.recTds * 6) * 100) / 100));
@@ -141,6 +147,13 @@ function promiseTEs() {
   });
 }
 
+function returnPlayerTeam(player_team, regex) {
+  let index = player_team.search(regex);
+  let player = player_team.slice(0, index).trim();
+  let team = player_team.slice(index).trim();
+  return { player, team };
+}
+
 async function combineAll() {
   const qbs = await promiseQBs();
   const rbs = await promiseRBs();
@@ -154,7 +167,9 @@ async function combineAll() {
   });
   // return ranks;
   for (let i = 0; i < 30; i++) {
-    console.log(i + 1 + ': ' + ranks[i].player + ' ' + ranks[i].vorp);
+    let { player, team, position, vorp } = ranks[i];
+    let str = `${i+1}: ${position} ${player} (${team}) - ${vorp}`;
+    console.log(str);
   }
 }
 
