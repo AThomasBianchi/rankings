@@ -1,6 +1,8 @@
-const rp = require('request-promise');
-const $ = require('cheerio');
-const replacementLevel = require('./replacementLevel');
+import rp from 'request-promise';
+import $ from 'cheerio';
+
+import replacementLevel from './replacementLevel.js';
+
 const QB_URL = 'https://www.fantasypros.com/nfl/projections/qb.php';
 const RB_URL = 'https://www.fantasypros.com/nfl/projections/rb.php';
 const WR_URL = 'https://www.fantasypros.com/nfl/projections/wr.php';
@@ -154,23 +156,26 @@ function returnPlayerTeam(player_team, regex) {
   return { player, team };
 }
 
-async function combineAll() {
-  const qbs = await promiseQBs();
-  const rbs = await promiseRBs();
-  const wrs = await promiseWRs();
-  const tes = await promiseTEs();
-  let ranks = [...qbs, ...rbs, ...wrs, ...tes];
-  ranks.sort((a, b) => {
-    if (a.vorp > b.vorp) return -1;
-    if (b.vorp > a.vorp) return 1;
-    return 0;
-  });
-  // return ranks;
-  for (let i = 0; i < 30; i++) {
-    let { player, team, position, vorp } = ranks[i];
-    let str = `${i+1}: ${position} ${player} (${team}) - ${vorp}`;
-    console.log(str);
-  }
+function combineAll() {
+  return new Promise( async (resolve, reject) => {
+    const qbs = await promiseQBs();
+    const rbs = await promiseRBs();
+    const wrs = await promiseWRs();
+    const tes = await promiseTEs();
+    let ranks = [...qbs, ...rbs, ...wrs, ...tes];
+    ranks.sort((a, b) => {
+      if (a.vorp > b.vorp) return -1;
+      if (b.vorp > a.vorp) return 1;
+      return 0;
+    });
+    // return ranks;
+    for (let i = 0; i < 30; i++) {
+      let { player, team, position, vorp } = ranks[i];
+      let str = `${i + 1}: ${position} ${player} (${team}) - ${vorp}`;
+      console.log(str);
+    }
+    resolve(ranks);
+  })
 }
 
-combineAll();
+export default combineAll;

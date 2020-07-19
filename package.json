@@ -1,0 +1,29 @@
+{
+  "name": "2020-rankings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "replacementLevel.js",
+  "type": "module",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "mongodb": "^3.5.9",
+    "papaparse": "^5.2.0",
+    "puppeteer": "^5.1.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AThomasBianchi/rankings.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AThomasBianchi/rankings/issues"
+  },
+  "homepage": "https://github.com/AThomasBianchi/rankings#readme"
+}
