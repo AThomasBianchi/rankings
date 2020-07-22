@@ -1,5 +1,6 @@
 import rp from 'request-promise';
 import $ from 'cheerio';
+import fs from 'fs';
 
 import replacementLevel from './replacementLevel.js';
 
@@ -169,13 +170,26 @@ function combineAll() {
       return 0;
     });
     // return ranks;
-    for (let i = 0; i < 30; i++) {
-      let { player, team, position, vorp } = ranks[i];
-      let str = `${i + 1}: ${position} ${player} (${team}) - ${vorp}`;
-      console.log(str);
-    }
+    // for (let i = 0; i < 30; i++) {
+    //   let { player, team, position, vorp } = ranks[i];
+    //   let str = `${i + 1}: ${position} ${player} (${team}) - ${vorp}`;
+    //   console.log(str);
+    // }
     resolve(ranks);
+    storeData(ranks, 'ranks.json')
   })
 }
 
+
+
+const storeData = (data, path) => {
+  try {
+    fs.writeFileSync(path, JSON.stringify(data))
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export default combineAll;
+
+combineAll();
