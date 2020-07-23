@@ -1,11 +1,10 @@
 import Papa from 'papaparse';
 import fs from 'fs';
-import combineAll from './scrape.js';
 
-async function writeCsv() {
-  let ranks = await combineAll();
+function writeCsv() {
+  var json = JSON.parse(fs.readFileSync('./ranks.json'));
 
-  const csv = Papa.unparse(ranks);
+  const csv = Papa.unparse(json);
 
   fs.writeFile('ranks.csv', csv, (err) => {
     if (err) throw err;
@@ -13,7 +12,7 @@ async function writeCsv() {
   });
 
   for (let i = 0; i < 30; i++) {
-    let { player, team, position, vorp } = ranks[i];
+    let { player, team, position, vorp } = json[i];
     let str = `${i + 1}: ${position} ${player} (${team}) - ${vorp}`;
     console.log(str);
   }

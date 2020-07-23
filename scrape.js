@@ -88,8 +88,8 @@ function promiseWRs() {
         $('#main-container table tbody tr', html).each((i, e) => {
           let player_team = $('.player-label', e).text().trim();
           let { player, team } = returnPlayerTeam(player_team, regex);
-          let rushTds = parseFloat($('td:nth-of-type(4)', e).text());
-          let recTds = parseFloat($('td:nth-of-type(7)', e).text());
+          let recTds = parseFloat($('td:nth-of-type(4)', e).text());
+          let rushTds = parseFloat($('td:nth-of-type(7)', e).text());
           wrs.push({ player, team, position, rushTds, recTds });
         });
         wrs.forEach(x => x.totalPoints = (Math.round((x.rushTds * 6 + x.recTds * 6) * 100) / 100));
@@ -157,27 +157,18 @@ function returnPlayerTeam(player_team, regex) {
   return { player, team };
 }
 
-function combineAll() {
-  return new Promise( async (resolve, reject) => {
-    const qbs = await promiseQBs();
-    const rbs = await promiseRBs();
-    const wrs = await promiseWRs();
-    const tes = await promiseTEs();
-    let ranks = [...qbs, ...rbs, ...wrs, ...tes];
-    ranks.sort((a, b) => {
-      if (a.vorp > b.vorp) return -1;
-      if (b.vorp > a.vorp) return 1;
-      return 0;
-    });
-    // return ranks;
-    // for (let i = 0; i < 30; i++) {
-    //   let { player, team, position, vorp } = ranks[i];
-    //   let str = `${i + 1}: ${position} ${player} (${team}) - ${vorp}`;
-    //   console.log(str);
-    // }
-    resolve(ranks);
-    storeData(ranks, 'ranks.json')
-  })
+async function combineAll() {
+  const qbs = await promiseQBs();
+  const rbs = await promiseRBs();
+  const wrs = await promiseWRs();
+  const tes = await promiseTEs();
+  let ranks = [...qbs.slice(0, 30), ...rbs.slice(0, 80), ...wrs.slice(0, 80), ...tes.slice(0, 30)];
+  ranks.sort((a, b) => {
+    if (a.vorp > b.vorp) return -1;
+    if (b.vorp > a.vorp) return 1;
+    return 0;
+  });
+  storeData(ranks, 'ranks.json')
 }
 
 
@@ -189,7 +180,5 @@ const storeData = (data, path) => {
     console.error(err)
   }
 }
-
-export default combineAll;
 
 combineAll();
