@@ -34,7 +34,10 @@ function promiseQBs() {
         });
         // add vorp level
         let replacementQb = (qbs[replacementLevel['qb'] - 2].totalPoints + qbs[replacementLevel['qb'] - 1].totalPoints + qbs[replacementLevel['qb']].totalPoints) / 3;
-        qbs.forEach(x => x.vorp = (Math.round((x.totalPoints - replacementQb) * 100) / 100));
+        qbs.forEach((x, index) => {
+          x.vorp = (Math.round((x.totalPoints - replacementQb) * 100) / 100);
+          x.posRank = index + 1;
+        });
         resolve(qbs);
       })
       .catch(function (err) {
@@ -70,7 +73,10 @@ function promiseRBs() {
           rbs[replacementLevel['rb']].totalPoints +
           rbs[replacementLevel['rb'] + 1].totalPoints
           ) / 5;
-        rbs.forEach(x => x.vorp = (Math.round((x.totalPoints - replacementRb) * 100) / 100));
+        rbs.forEach((x, index) => {
+          x.vorp = (Math.round((x.totalPoints - replacementRb) * 100) / 100)
+          x.posRank = index + 1;
+        });
         resolve(rbs);
       })
       .catch((err) => {
@@ -105,7 +111,10 @@ function promiseWRs() {
           wrs[replacementLevel['wr']].totalPoints +
           wrs[replacementLevel['wr'] + 1].totalPoints
           ) / 5;
-        wrs.forEach(x => x.vorp = (Math.round((x.totalPoints - replacementWr) * 100) / 100));
+        wrs.forEach((wr, index) => {
+          wr.vorp = (Math.round((wr.totalPoints - replacementWr) * 100) / 100);
+          wr.posRank = index + 1
+        });
         resolve(wrs);
       })
       .catch((err) => {
@@ -140,7 +149,10 @@ function promiseTEs() {
           tes[replacementLevel['te'] - 1].totalPoints +
           tes[replacementLevel['te']].totalPoints
         ) / 3;
-        tes.forEach(x => x.vorp = (Math.round((x.totalPoints - replacementTe) * 100) / 100));
+        tes.forEach((te, index) => {
+          te.vorp = (Math.round((te.totalPoints - replacementTe) * 100) / 100)
+          te.posRank = index + 1
+        });
         resolve(tes);
       })
       .catch(function (err) {
@@ -172,7 +184,7 @@ async function combineAll() {
 }
 
 
-
+// TODO write as update not rewrite
 const storeData = (data, path) => {
   try {
     fs.writeFileSync(path, JSON.stringify(data))
