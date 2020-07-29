@@ -183,8 +183,6 @@ async function combineAll() {
   storeData(ranks, 'ranks.json')
 }
 
-
-// TODO write as update not rewrite
 const storeData = (data, path) => {
   try {
     fs.writeFileSync(path, JSON.stringify(data))

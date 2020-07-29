@@ -1,6 +1,5 @@
 import fs from 'fs';
 import readline from 'readline';
-import { log } from 'console';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -12,26 +11,16 @@ var ranks = JSON.parse(fs.readFileSync('./ranks.json'));
 let qbs = ranks.filter(x => x.position === 'QB');
 qbs.forEach((qb, i) => {
   qb.rank = i + 1;
-})
-
+});
 
 qbs = qbs.slice(0,10);
-
-
-// rl.question('what is your name', (name) => {
-//   console.log(name);
-//   rl.question('what is your job', (job) => {
-//     console.log(job);
-//     rl.close();
-//   });
-// });
 
 const logTopTen = (ranks) => {
   console.log('top ten')
   for (let i = 0; i < 10; i++) {
     console.log(`${ranks[i].rank}: ${ranks[i].player}`);
   }
-}
+};
 
 const pickTwo = (ranks) => {
   let evalNum = Math.floor(Math.random() * Math.floor(ranks.length - 1));
@@ -39,7 +28,7 @@ const pickTwo = (ranks) => {
   console.log(ranks[evalNum + 1]);
   console.log(`would you rather pick ${ranks[evalNum].player} or ${ranks[evalNum + 1].player}`);
   return evalNum;
-}
+};
 
 const compare = (ranks) => {
   logTopTen(ranks);
@@ -60,8 +49,7 @@ const compare = (ranks) => {
       }
       rl.close();
     });
-  })
-  // rl.on('close')
+  });
 }
 
 compare(qbs);
