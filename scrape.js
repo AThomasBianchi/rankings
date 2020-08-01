@@ -1,8 +1,8 @@
-import rp from 'request-promise';
-import $ from 'cheerio';
-import fs from 'fs';
+const rp = require('request-promise');
+const $ = require('cheerio');
+const fs = require('fs');
 
-import replacementLevel from './replacementLevel.js';
+const replacementLevel = require('./replacementLevel.js');
 
 const QB_URL = 'https://www.fantasypros.com/nfl/projections/qb.php';
 const RB_URL = 'https://www.fantasypros.com/nfl/projections/rb.php';

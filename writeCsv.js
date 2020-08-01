@@ -1,5 +1,5 @@
-import Papa from 'papaparse';
-import fs from 'fs';
+const Papa = require('papaparse');
+const fs = require('fs');
 
 function writeCsv() {
   var json = JSON.parse(fs.readFileSync('./ranks.json'));
