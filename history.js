@@ -16,7 +16,6 @@ function getPickPostion(year) {
   let te = 1;
   let k = 1;
 
-
   json.forEach(pick => {
     let [jtfflTeam, player, nflTeam, pos] = pick
     pos = pos.toUpperCase();
