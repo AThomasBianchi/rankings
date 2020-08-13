@@ -26,4 +26,4 @@ const RL_2017 = {
   te: 12,
 };
 
-export default replacementLevel;
+module.exports = replacementLevel;

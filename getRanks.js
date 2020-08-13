@@ -3,6 +3,7 @@ const $ = require('cheerio');
 const fs = require('fs');
 
 const RANKS_URL = 'https://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php'
+const POS_REGEX = /\d+$/;
 
 function getRanks() {
   return new Promise((resolve, reject) => {
@@ -26,8 +27,14 @@ function getRanks() {
 async function assignRanks() {
   const ranks = await getRanks();
   const json = JSON.parse(fs.readFileSync('./ranks.json'));
-  
-  console.log(ranks);
+  json.forEach(player => {
+    let rank = ranks.find(rank => rank.player === player.player);
+    let posRank = rank.posRank.match(POS_REGEX);
+    player.consensusOvrRank = rank.ovrRank;
+    player.consensusPosRank = parseInt(posRank);
+  });
+  console.log(json);
+  // console.log(ranks);
 }
 
 

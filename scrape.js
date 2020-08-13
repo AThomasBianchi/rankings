@@ -36,7 +36,7 @@ function promiseQBs() {
         let replacementQb = (qbs[replacementLevel['qb'] - 2].totalPoints + qbs[replacementLevel['qb'] - 1].totalPoints + qbs[replacementLevel['qb']].totalPoints) / 3;
         qbs.forEach((x, index) => {
           x.vorp = (Math.round((x.totalPoints - replacementQb) * 100) / 100);
-          x.posRank = index + 1;
+          x.projPosRank = index + 1;
         });
         resolve(qbs);
       })
@@ -75,7 +75,7 @@ function promiseRBs() {
           ) / 5;
         rbs.forEach((x, index) => {
           x.vorp = (Math.round((x.totalPoints - replacementRb) * 100) / 100)
-          x.posRank = index + 1;
+          x.projPosRank = index + 1;
         });
         resolve(rbs);
       })
@@ -113,7 +113,7 @@ function promiseWRs() {
           ) / 5;
         wrs.forEach((wr, index) => {
           wr.vorp = (Math.round((wr.totalPoints - replacementWr) * 100) / 100);
-          wr.posRank = index + 1
+          wr.projPosRank = index + 1
         });
         resolve(wrs);
       })
@@ -151,7 +151,7 @@ function promiseTEs() {
         ) / 3;
         tes.forEach((te, index) => {
           te.vorp = (Math.round((te.totalPoints - replacementTe) * 100) / 100)
-          te.posRank = index + 1
+          te.projPosRank = index + 1
         });
         resolve(tes);
       })
@@ -179,6 +179,9 @@ async function combineAll() {
     if (a.vorp > b.vorp) return -1;
     if (b.vorp > a.vorp) return 1;
     return 0;
+  });
+  ranks.forEach((rank, index) => {
+    rank.projOvrRank = index + 1;
   });
   storeData(ranks, 'ranks.json')
 }
