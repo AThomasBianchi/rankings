@@ -15,7 +15,9 @@ function getRanks() {
           let team = $('.player-label .grey', rank).text();
           let ovrRank = parseFloat($('td:nth-of-type(1)', rank).text())
           let posRank = $('td:nth-of-type(4)', rank).text();
-          ranks.push({ player, team, ovrRank, posRank })
+          let adp = $('td:nth-of-type(10)', rank).text();
+          console.log(player, adp);
+          ranks.push({ player, team, ovrRank, posRank, adp })
           resolve(ranks);
         });
       }).catch((err) => {
@@ -32,9 +34,20 @@ async function assignRanks() {
     let posRank = rank.posRank.match(POS_REGEX);
     player.consensusOvrRank = rank.ovrRank;
     player.consensusPosRank = parseInt(posRank);
+    player.adp = parseFloat(rank.adp);
   });
-  console.log(json);
+  // console.log(json);
+  storeData(json, 'ranks.json');
+  // todo rewrite json
   // console.log(ranks);
+}
+
+const storeData = (data, path) => {
+  try {
+    fs.writeFileSync(path, JSON.stringify(data))
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 

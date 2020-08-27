@@ -183,7 +183,14 @@ async function combineAll() {
   ranks.forEach((rank, index) => {
     rank.projOvrRank = index + 1;
   });
-  storeData(ranks, 'ranks.json')
+  var json = JSON.parse(fs.readFileSync('./ranks.json'));
+  let saveRanks = ranks.map(rank => {
+    let { player: projPlayer } = rank;
+    let jsonPlayer = json.find(player => player.player === projPlayer)
+    return {...rank, ...jsonPlayer};
+  })
+
+  storeData(saveRanks, 'ranks.json')
 }
 
 const storeData = (data, path) => {
@@ -195,3 +202,5 @@ const storeData = (data, path) => {
 }
 
 combineAll();
+
+// todo assign instead of overwriting
